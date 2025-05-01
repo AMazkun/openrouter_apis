@@ -5,12 +5,30 @@
 //  Created by admin on 01.05.2025.
 //
 
-let openRouterApiKey = "<YOUR KEY HERE>"
-
-
 import SwiftUI
 import PhotosUI
 import UIKit
+
+//let openRouterApiKey = "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"
+let openRouterApiKey = "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"
+
+struct ModelOption: Identifiable, Hashable {
+    var id: String
+    var supportImage: Bool
+}
+
+let availableModels: [String: ModelOption] = [
+    "$ Claude 3.7 Sonnet": ModelOption(id: "anthropic/claude-3.7-sonnet", supportImage: true),
+    "Qwen3-235B": ModelOption(id: "qwen/qwen3-235b-a22b", supportImage: false),
+    "Qwen2.5-vl-72b-instruct": ModelOption(id: "qwen/qwen2.5-vl-72b-instruct:free", supportImage: true),
+    "Mistral-small-3.1-24b-instruct": ModelOption(id: "mistralai/mistral-small-3.1-24b-instruct:free", supportImage: true),
+    "Llama-3.2-11b-vision-instruct": ModelOption(id: "meta-llama/llama-3.2-11b-vision-instruct:free", supportImage: true),
+    "Llama-4-maverick": ModelOption(id: "meta-llama/llama-4-maverick:free", supportImage: true),
+    "google/gemini-2.0-flash": ModelOption(id: "google/gemini-2.0-flash-exp:free", supportImage: true),
+    "google/gemma-3-4b": ModelOption(id: "google/gemma-3-4b-it:free", supportImage: true),
+    "$ google/gemini-2.5-pro-exp": ModelOption(id: "google/gemini-2.5-pro-exp-03-25", supportImage: true),
+    "$ GPT-4.1": ModelOption(id: "openai/gpt-4.1", supportImage: true)
+]
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: Image?
@@ -50,24 +68,6 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
 }
-
-struct ModelOption: Identifiable, Hashable {
-    var id: String
-    var supportImage: Bool
-}
-
-let availableModels: [String: ModelOption] = [
-    "$ Claude 3.7 Sonnet": ModelOption(id: "anthropic/claude-3.7-sonnet", supportImage: true),
-    "Qwen3-235B": ModelOption(id: "qwen/qwen3-235b-a22b", supportImage: false),
-    "Qwen2.5-vl-72b-instruct": ModelOption(id: "qwen/qwen2.5-vl-72b-instruct:free", supportImage: true),
-    "Mistral-small-3.1-24b-instruct": ModelOption(id: "mistralai/mistral-small-3.1-24b-instruct:free", supportImage: true),
-    "Llama-3.2-11b-vision-instruct": ModelOption(id: "meta-llama/llama-3.2-11b-vision-instruct:free", supportImage: true),
-    "Llama-4-maverick": ModelOption(id: "meta-llama/llama-4-maverick:free", supportImage: true),
-    "google/gemini-2.0-flash": ModelOption(id: "google/gemini-2.0-flash-exp:free", supportImage: true),
-    "google/gemma-3-4b": ModelOption(id: "google/gemma-3-4b-it:free", supportImage: true),
-    "$ google/gemini-2.5-pro-exp": ModelOption(id: "google/gemini-2.5-pro-exp-03-25", supportImage: true),
-    "$ GPT-4.1": ModelOption(id: "openai/gpt-4.1", supportImage: true)
-]
 
 struct ContentView: View {
     @State private var question: String = "Say something good about me"
@@ -127,6 +127,7 @@ struct ContentView: View {
         HStack {
             let isAnswered = !response.isEmpty
             Button(isAnswered ? "Ask again" : "Ask") {
+                UIApplication.shared.endEditing()
                 Task {
                     await analyzeImage()
                 }
@@ -159,6 +160,7 @@ struct ContentView: View {
                 activeImageSource = nil
                 imageUrl = ""
             } else {
+                UIApplication.shared.endEditing()
                 showingImageSourceOptions = true
             }
         }
@@ -207,6 +209,7 @@ struct ContentView: View {
                 
                 Spacer()
             }
+            .scrollDismissesKeyboard(.automatic)
             .padding()
             .actionSheet(isPresented: $showingImageSourceOptions) {
                 ActionSheet(title: Text("Choose Image Source"), buttons: [
@@ -375,6 +378,12 @@ extension Image {
     }
 }
 #endif
+
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
 
 #Preview {
     ContentView()
