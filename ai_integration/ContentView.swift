@@ -5,7 +5,7 @@
 //  Created by admin on 01.05.2025.
 //
 
-let openRouterApiKey = "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"
+let openRouterApiKey = "<YOUR KEY HERE>"
 
 
 import SwiftUI
