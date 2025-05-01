@@ -9,8 +9,8 @@ import SwiftUI
 import PhotosUI
 import UIKit
 
-//let openRouterApiKey = "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"
-let openRouterApiKey = "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"
+
+let openRouterApiKey = "<YOUR KEY HERE>"
 
 struct ModelOption: Identifiable, Hashable {
     var id: String
