@@ -13,6 +13,18 @@ The project aims to provide a seamless way to interact with various LLMs through
 - Provides a simple interface for sending and receiving data from LLMs.
 - Example implementations for testing API functionality.
 
+### Screenshots
+Here are some example screenshots of the application:
+
+iOS
+|![App Screenshot](img/Screen_ios_pic.jpeg)|![App Screenshot](img/Screen_ios_pic.jpeg)|
+
+MacOs
+![API Response Example](img/Screenshot_macos_text.jpeg)
+![API Response Example](img/Screenshot_macos_pic_00.jpeg)
+![API Response Example](img/Screenshot_macos_pic_01.jpeg)
+
+
 ### Requirements
 - **Xcode**: Version 15.0 or later
 - **iOS**: 16.0 or later
@@ -25,3 +37,4 @@ The project aims to provide a seamless way to interact with various LLMs through
 1. Clone the repository:
    ```bash
    git clone https://github.com/AMazkun/openrouter_apis.git
+   ```
