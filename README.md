@@ -16,14 +16,18 @@ The project aims to provide a seamless way to interact with various LLMs through
 ### Screenshots
 Here are some example screenshots of the application:
 
-iOS
-|![App Screenshot](img/Screen_ios_pic.jpeg)|![App Screenshot](img/Screen_ios_pic.jpeg)|
+#### iOS
 
-MacOs
+| Text request | Picture request |
+|--------------|--------------|
+| ![App Screenshot](img/Screen_ios_text.jpeg) | ![App Screenshot](img/Screen_ios_pic.jpeg) |
+
+
+#### MacOs
+
 ![API Response Example](img/Screenshot_macos_text.jpeg)
 ![API Response Example](img/Screenshot_macos_pic_00.jpeg)
 ![API Response Example](img/Screenshot_macos_pic_01.jpeg)
-
 
 ### Requirements
 - **Xcode**: Version 15.0 or later
