@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		840B9C5A2DC9617B0061B8F4 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 840B9C592DC9617B0061B8F4 /* SDWebImageWebPCoder */; };
+		840B9C5C2DC9632F0061B8F4 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840B9C5B2DC9632F0061B8F4 /* ImageHelper.swift */; };
 		84DB0C012DC8BA5B00EF5601 /* chart_ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DB0BFD2DC8BA5B00EF5601 /* chart_ext.swift */; };
 		84DB0C022DC8BA5B00EF5601 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DB0BFE2DC8BA5B00EF5601 /* ContentView.swift */; };
 		84DB0C032DC8BA5B00EF5601 /* ai_chart_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DB0BFB2DC8BA5B00EF5601 /* ai_chart_ios.swift */; };
+		84DB0C042DC8BA5B00EF5601 /* responce.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84DB0BFF2DC8BA5B00EF5601 /* responce.txt */; };
 		84DB0C052DC8BA5B00EF5601 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84DB0BFC2DC8BA5B00EF5601 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		840AECEE2DC3D1B90072B524 /* openrouter_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = openrouter_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		840B9C5B2DC9632F0061B8F4 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
 		84DB0BFB2DC8BA5B00EF5601 /* ai_chart_ios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ai_chart_ios.swift; sourceTree = "<group>"; };
 		84DB0BFC2DC8BA5B00EF5601 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84DB0BFD2DC8BA5B00EF5601 /* chart_ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chart_ext.swift; sourceTree = "<group>"; };
@@ -27,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				840B9C5A2DC9617B0061B8F4 /* SDWebImageWebPCoder in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +62,7 @@
 				84DB0BFD2DC8BA5B00EF5601 /* chart_ext.swift */,
 				84DB0BFE2DC8BA5B00EF5601 /* ContentView.swift */,
 				84DB0BFF2DC8BA5B00EF5601 /* responce.txt */,
+				840B9C5B2DC9632F0061B8F4 /* ImageHelper.swift */,
 			);
 			path = ai_chart_ios;
 			sourceTree = "<group>";
@@ -78,6 +84,7 @@
 			);
 			name = openrouter_ios;
 			packageProductDependencies = (
+				840B9C592DC9617B0061B8F4 /* SDWebImageWebPCoder */,
 			);
 			productName = claudi_integration;
 			productReference = 840AECEE2DC3D1B90072B524 /* openrouter_ios.app */;
@@ -107,6 +114,9 @@
 			);
 			mainGroup = 840AECE52DC3D1B90072B524;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				840B9C582DC9617B0061B8F4 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 840AECEF2DC3D1B90072B524 /* Products */;
 			projectDirPath = "";
@@ -122,6 +132,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84DB0C042DC8BA5B00EF5601 /* responce.txt in Resources */,
 				84DB0C052DC8BA5B00EF5601 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,6 +147,7 @@
 				84DB0C012DC8BA5B00EF5601 /* chart_ext.swift in Sources */,
 				84DB0C022DC8BA5B00EF5601 /* ContentView.swift in Sources */,
 				84DB0C032DC8BA5B00EF5601 /* ai_chart_ios.swift in Sources */,
+				840B9C5C2DC9632F0061B8F4 /* ImageHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +357,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		840B9C582DC9617B0061B8F4 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageWebPCoder.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		840B9C592DC9617B0061B8F4 /* SDWebImageWebPCoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 840B9C582DC9617B0061B8F4 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */;
+			productName = SDWebImageWebPCoder;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 840AECE62DC3D1B90072B524 /* Project object */;
 }

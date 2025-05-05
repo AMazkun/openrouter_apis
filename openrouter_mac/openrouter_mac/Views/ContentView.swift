@@ -31,7 +31,7 @@ struct ContentView: View {
                 VStack(spacing: 0) {
                     if let conversation = charts.selectedConversation {
                         ChartArea(conversation: conversation)
-                        InpurArea(convarsation: conversation)
+                        InputArea(conversation: conversation)
                     } else {
                         
                         Spacer()

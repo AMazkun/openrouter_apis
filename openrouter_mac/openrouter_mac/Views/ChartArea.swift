@@ -20,8 +20,12 @@ struct HUMessageView: View {
                     .background(Color.blue.opacity(0.2))
                     .cornerRadius(12)
 
-                
-                if let imageUrl = message.imageUrl, !imageUrl.isEmpty {
+                if let image = message.selectedImage {
+                    Image(nsImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150, height: 100)
+                } else if let imageUrl = message.imageUrl, !imageUrl.isEmpty {
                     AsyncImage(url: URL(string: imageUrl)) { image in
                         image
                             .resizable()

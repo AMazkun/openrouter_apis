@@ -7,45 +7,42 @@
 
 import SwiftUI
 import AppKit
+import Cocoa
+import libwebp
 
 func toggleSidebar() {
     NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
 }
 
-extension Image {
-    func asNSImage() -> NSImage? {
-        let hostingView = NSHostingView(rootView: self.resizable().aspectRatio(contentMode: .fit).frame(width: 400, height: 400))
-        hostingView.setFrameSize(NSSize(width: 400, height: 400))
-        
-        guard let bitmap = NSBitmapImageRep(
-            bitmapDataPlanes: nil,
-            pixelsWide: Int(hostingView.frame.width),
-            pixelsHigh: Int(hostingView.frame.height),
-            bitsPerSample: 8,
-            samplesPerPixel: 4,
-            hasAlpha: true,
-            isPlanar: false,
-            colorSpaceName: .calibratedRGB,
-            bytesPerRow: 0,
-            bitsPerPixel: 0
-        ) else { return nil }
-        
-        hostingView.layer?.render(in: NSGraphicsContext(bitmapImageRep: bitmap)! as! CGContext)
-        
-        let image = NSImage(size: hostingView.frame.size)
-        image.addRepresentation(bitmap)
-        
-        return image
+import Foundation
+import SDWebImageWebPCoder
+
+func encodeWebP(pixelData: Data, width: Int, height: Int) -> Data? {
+    var outputData: Data? = nil
+    
+    pixelData.withUnsafeBytes { rawBufferPointer in
+        if let rawPointer = rawBufferPointer.baseAddress {
+            var webPData: UnsafeMutablePointer<UInt8>? = nil
+            let webPSize = WebPEncodeLosslessBGRA(rawPointer.assumingMemoryBound(to: UInt8.self), Int32(width), Int32(height), Int32(width * 4), &webPData)
+            
+            if webPSize > 0, let webPData = webPData {
+                outputData = Data(bytes: webPData, count: Int(webPSize))
+                free(webPData)
+            }
+        }
     }
+    
+    return outputData
 }
 
-// A more universal approach
-func getImageData(from swiftUIImage: Image?) -> Data? {
-    if let nsImage = swiftUIImage?.asNSImage(),
-       let tiffData = nsImage.tiffRepresentation,
-       let bitmapImage = NSBitmapImageRep(data: tiffData),
-       let jpegData = bitmapImage.representation(using: .jpeg, properties: [.compressionFactor: 0.8]) {
-        return jpegData
+
+func convertImageToWebPBase64(image: NSImage) -> String? {
+    
+    guard let webpData = SDImageWebPCoder.shared.encodedData(with: image, format: .webP, options: nil) else {
+        print("Error: Could not encode UIImage to WebP data.")
+        return nil
     }
-    return nil
+
+    let base64String = webpData.base64EncodedString()
+    return "data:image/webp;base64,\(base64String)"
 }

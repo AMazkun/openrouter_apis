@@ -1,5 +1,5 @@
 //
-//  InpurArea.swift
+//  InputArea.swift
 //  AI View Test
 //
 //  Created by admin on 02.05.2025.
@@ -8,23 +8,43 @@
 import SwiftUI
 import Cocoa
 
-struct InpurArea: View {
-    @ObservedObject var convarsation: Conversation
+struct InputArea: View {
+    @ObservedObject var conversation: Conversation
     @EnvironmentObject var charts: AIChartVeiwModel
-    @State var addImage: Bool = false
-    
+    @State private var addImage: Bool = false
+    @State private var showUrl: Bool = false
+    @State private var showPicker: Bool = false
+
     @ViewBuilder
-    var button_panel: some View {
-        HStack (spacing: 12) {
-            Button(action: {
-                addImage.toggle()
-                convarsation.imageUrl = ""
-            }) {
-                Image(systemName: addImage ? "xmark.circle.fill" : "plus")
-                    .foregroundColor(.gray)
+    var buttonPanel: some View {
+        HStack(spacing: 12) {
+            let imageOn = showUrl || conversation.selectedImage != nil
+            if imageOn {
+                Button(action: {
+                    showUrl = false
+                    conversation.imageUrl = ""
+                    conversation.selectedImage = nil
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                }
+                .buttonStyle(PlainButtonStyle())
+
+            } else {
+                Menu {
+                    Button("URL", action: {
+                        showUrl = true
+                        conversation.imageUrl = ""
+                    })
+                    Button("Gallery", action: {
+                        showPicker = true
+                    })
+                } label: {
+                    Image(systemName: "plus")
+                        .foregroundColor(.gray)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .disabled(!conversation.modelAllowImage())
             }
-            .buttonStyle(PlainButtonStyle())
-            .disabled(!convarsation.modelAllowImage())
             
             Button(action: {}) {
                 Image(systemName: "globe")
@@ -58,7 +78,7 @@ struct InpurArea: View {
 
             Button(action: {
                 addImage = false
-                convarsation.appendQuestion()
+                conversation.appendQuestion()
                 charts.update.toggle()
             }) {
                 Image(systemName: "waveform")
@@ -68,7 +88,7 @@ struct InpurArea: View {
                     .frame(width: 32, height: 32)
             }
             .buttonStyle(PlainButtonStyle())
-            .disabled(convarsation.question.isEmpty)
+            .disabled(conversation.question.isEmpty)
         }
     }
     
@@ -76,18 +96,26 @@ struct InpurArea: View {
         // Input Area
         VStack(spacing: 8) {
             
-            TextField("Ask anything...", text: $convarsation.question, axis: .vertical)
+            TextField("Ask anything...", text: $conversation.question, axis: .vertical)
                 .lineLimit(2...10)
                 .textFieldStyle(PlainTextFieldStyle())
                 .onSubmit {
                     addImage = false
-                    convarsation.appendQuestion()
+                    conversation.appendQuestion()
                     charts.update.toggle()
                 }
             
-            VStack (alignment: .leading) {
-                let imageUrl = convarsation.imageUrl
-                if !imageUrl.isEmpty {
+            VStack(alignment: .leading) {
+                let imageUrl = conversation.imageUrl
+                if let image = conversation.selectedImage {
+                    HStack {
+                        Image(nsImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 100)
+                        Spacer()
+                    }
+                } else if !imageUrl.isEmpty {
                     AsyncImage(url: URL(string: imageUrl)) { image in
                         image
                             .resizable()
@@ -99,26 +127,32 @@ struct InpurArea: View {
                     }
                 }
                 
-                if addImage {
-                    TextField("Image URL", text: $convarsation.imageUrl)
+                if showUrl {
+                    TextField("Image URL", text: $conversation.imageUrl)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
             }
             
-            button_panel
+            buttonPanel
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-        .background(RoundedRectangle(cornerRadius: 12.0).fill(Color(NSColor.gray).opacity(0.6)))
+        .background(RoundedRectangle(cornerRadius: 12.0).fill(Color(NSColor.gray).opacity(0.2)))
+        .sheet(isPresented: $showPicker) {
+            ImagePickerView() { selection in
+                conversation.selectedImage = selection
+                showPicker = false
+            }
+        }
     }
 }
 
 // Preview provider
-struct ContentView1_Previews: PreviewProvider {
+struct InputArea_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        InputArea(conversation: mokeConversation)
             .environmentObject(mokeConversationModel)
             .preferredColorScheme(.dark)
-            .frame(width: 1000, height: 700)
+            .frame(width: 1000, height: 200)
     }
 }

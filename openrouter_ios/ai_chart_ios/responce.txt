@@ -1,0 +1,85 @@
+//
+//  Untitled.swift
+//  claudi_integration
+//
+//  Created by admin on 01.05.2025.
+//
+
+Printing description of jsonResponse:
+▿ Optional<Dictionary<String, Any>>
+  ▿ some : 7 elements
+    ▿ 0 : 2 elements
+      - key : "choices"
+      ▿ value : 1 element
+        ▿ 0 : 5 elements
+          ▿ 0 : 2 elements
+            - key : index
+            - value : 0
+          ▿ 1 : 2 elements
+            - key : message
+            ▿ value : 4 elements
+              ▿ 0 : 2 elements
+                - key : reasoning
+                - value : <null>
+              ▿ 1 : 2 elements
+                - key : content
+                - value : This image shows a beautiful nature landscape featuring a wooden boardwalk or path cutting through a lush green wetland or grassland area. The boardwalk stretches into the distance, creating a perfect perspective. On either side are tall green grasses or reeds typical of a marsh or wetland ecosystem. In the background, you can see trees and shrubs lining the horizon. Above is a stunning blue sky with wispy white clouds stretching across it. The scene has a serene, peaceful quality with vibrant natural colors - the rich greens of the vegetation contrasting beautifully with the blue sky and wooden boardwalk. This appears to be taken in a nature preserve or protected wetland area during spring or summer.
+              ▿ 2 : 2 elements
+                - key : refusal
+                - value : <null>
+              ▿ 3 : 2 elements
+                - key : role
+                - value : assistant
+          ▿ 2 : 2 elements
+            - key : logprobs
+            - value : <null>
+          ▿ 3 : 2 elements
+            - key : native_finish_reason
+            - value : stop
+          ▿ 4 : 2 elements
+            - key : finish_reason
+            - value : stop
+    ▿ 1 : 2 elements
+      - key : "usage"
+      ▿ value : 3 elements
+        ▿ 0 : 2 elements
+          - key : total_tokens
+          - value : 1739
+        ▿ 1 : 2 elements
+          - key : completion_tokens
+          - value : 155
+        ▿ 2 : 2 elements
+          - key : prompt_tokens
+          - value : 1584
+    ▿ 2 : 2 elements
+      - key : "provider"
+      - value : Google
+    ▿ 3 : 2 elements
+      - key : "created"
+      - value : 1746116689
+    ▿ 4 : 2 elements
+      - key : "object"
+      - value : chat.completion
+    ▿ 5 : 2 elements
+      - key : "model"
+      - value : anthropic/claude-3.7-sonnet
+    ▿ 6 : 2 elements
+      - key : "id"
+      - value : gen-1746116689-alyc2ttZymTFfiUS6LVw
+
+
+You're curious enough to engage with an AI and seek positive feedback, which shows emotional intelligence and openness. That willingness to connect and seek different perspectives is a genuinely admirable quality that helps people grow and learn throughout life.
+
+
+The image shows a stylized logo or emblem of what appears to be a cat or feline head in profile. It features blue outlines for the top portion of the head and yellow/gold elements representing facial features or markings, possibly whiskers or a muzzle area. The design is set against a black background, creating strong contrast with the blue and yellow colors. This looks like it could be a sports team mascot, gaming logo, or brand identity for a company or organization.
+
+OpenAI: GPT-4.1
+"model": "openai/gpt-4.1"
+
+Qwen: Qwen3 235B A22B
+"model": "qwen/qwen3-235b-a22b"
+
+
+The plant in the image is moss, a type of non-vascular plant that belongs to the taxonomic division Bryophyta. Mosses are small, simple plants that typically grow in dense green clumps or mats, often in damp or shady locations. They have no true roots, stems, or leaves, but instead have structures that resemble these organs.
+
+Mosses are characterized by their ability to thrive in a variety of environments, from forests to tundras, and play an important role in many ecosystems. They can help to stabilize soil, retain moisture, and provide habitat for various animals. The image appears to be a close-up of Sphagnum moss, a genus of mosses that are commonly found in peat bogs and other wetland areas. Sphagnum mosses are known for their ability to hold large amounts of water and create acidic environments, which can lead to the formation of peat.

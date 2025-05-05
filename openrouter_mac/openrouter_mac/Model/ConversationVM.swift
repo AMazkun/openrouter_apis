@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-let openRouterApiKey = "<YOUR-KEY>"
+let openRouterApiKey = "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"
 
 struct ModelOption: Identifiable, Hashable {
     var id: String
@@ -60,7 +60,7 @@ class Conversation: ObservableObject, Identifiable {
         }
     }
     @Published var question: String
-    @Published var selectedImage: Image?
+    @Published var selectedImage: NSImage?
     @Published var imageUrl: String
     @Published var requestSent: Bool = false
 
@@ -88,10 +88,9 @@ class Conversation: ObservableObject, Identifiable {
         // Handle image inclusion if the model supports it
         if modelAllowImage() {
             if let selectedImage {
-                if  let imageData = getImageData(from: selectedImage) {
-                    let base64String = imageData.base64EncodedString()
+                if  let base64String = convertImageToWebPBase64(image: selectedImage) {
                     let imageUrlDict: [String: Any] = [
-                        "url": "data:image/jpeg;base64,\(base64String)",
+                        "url": base64String,
                         "detail": "auto"
                     ]
                     contentArray.append([
@@ -278,7 +277,7 @@ struct Message: Identifiable {
     let role: Role
     let content: String
     let timestamp: Date
-    var selectedImage: Image? = nil
+    var selectedImage: NSImage? = nil
     var imageUrl: String? = nil
 }
 

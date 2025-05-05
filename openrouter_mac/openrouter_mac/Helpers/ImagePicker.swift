@@ -9,7 +9,8 @@ import SwiftUI
 import AppKit
 
 struct ImagePickerView: View {
-    @State private var selectedImage: NSImage?
+    @State var selectedImage: NSImage?
+    let completion: (NSImage?) -> Void
 
     var body: some View {
         VStack {
@@ -40,10 +41,7 @@ struct ImagePickerView: View {
 
         if panel.runModal() == .OK, let url = panel.urls.first, let nsImage = NSImage(contentsOf: url) {
             selectedImage = nsImage
+            completion(nsImage)
         }
     }
-}
-
-#Preview {
-    ImagePickerView()
 }

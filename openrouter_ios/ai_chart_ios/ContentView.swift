@@ -6,10 +6,8 @@
 //
 
 import SwiftUI
-import PhotosUI
-import UIKit
 
-let openRouterApiKey = "<YOUR-KEY>"
+let openRouterApiKey = "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"
 
 struct ModelOption: Identifiable, Hashable {
     var id: String
@@ -26,59 +24,21 @@ let availableModels: [String: ModelOption] = [
     "google/gemini-2.0-flash": ModelOption(id: "google/gemini-2.0-flash-exp:free", supportImage: true),
     "google/gemma-3-4b": ModelOption(id: "google/gemma-3-4b-it:free", supportImage: true),
     "$ google/gemini-2.5-pro-exp": ModelOption(id: "google/gemini-2.5-pro-exp-03-25", supportImage: true),
-    "$ GPT-4.1": ModelOption(id: "openai/gpt-4.1", supportImage: true)
+    "$ GPT-4.1": ModelOption(id: "openai/gpt-4.1", supportImage: true),
 ]
-
-struct ImagePicker: UIViewControllerRepresentable {
-    @Binding var selectedImage: Image?
-    @Environment(\.dismiss) var dismiss
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = .photoLibrary
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        // No updates needed here
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: ImagePicker
-        
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let uiImage = info[.originalImage] as? UIImage {
-                parent.selectedImage = Image(uiImage: uiImage)
-            }
-            parent.dismiss()
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.dismiss()
-        }
-    }
-}
 
 struct ContentView: View {
     @State private var question: String = "Say something good about me"
     @State private var showingImagePicker: Bool = false
-    @State private var selectedImage: Image?
+    @State private var selectedImage: UIImage?
     @State private var imageUrl: String = ""
     @State private var response: String = ""
     @State private var isLoading: Bool = false
     @State private var showingImageSourceOptions: Bool = false
     @State private var activeImageSource: ImageSource? = nil
     @State private var selectedModel: String = "Llama-4-maverick" // Default model
-    
+    @State private var showCopyPopup = false
+    @State private var copyText : String = ""
     enum ImageSource: Identifiable {
         case gallery
         case url
@@ -106,9 +66,21 @@ struct ContentView: View {
                 TextEditor(text: $question)
                     .padding(2) // Add some internal padding so text doesn't touch the border
                     .background(Color.clear) // Make the TextEditor's background clear to see the border
+                
             }
             .frame(maxHeight: 60)
-            
+            .animation(.easeInOut, value: showCopyPopup)
+            .onTapGesture(count: 2) {
+                UIPasteboard.general.string = question
+                copyText = "Question copied to clipboard!"
+                showCopyPopup = true
+                
+                // Auto-hide popup after 2 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    showCopyPopup = false
+                }
+            }
+
             if !question.isEmpty {
                 Button {
                     question = ""
@@ -146,6 +118,16 @@ struct ContentView: View {
                 Text(response)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 8)
+                    .onTapGesture(count: 2) {
+                        UIPasteboard.general.string = response
+                        showCopyPopup = true
+                        copyText = "Response copied to clipboard!"
+                        
+                        // Auto-hide popup after 2 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            showCopyPopup = false
+                        }
+                    }
             }
         }
     }
@@ -167,7 +149,7 @@ struct ContentView: View {
 
         VStack {
             if let selectedImage {
-                selectedImage
+                Image(uiImage: selectedImage)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 150)
@@ -186,6 +168,16 @@ struct ContentView: View {
             if activeImageSource == .url {
                 TextField("Image URL", text: $imageUrl)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onTapGesture(count: 2) {
+                        UIPasteboard.general.string = imageUrl
+                        showCopyPopup = true
+                        copyText = "Image URL copied to clipboard!"
+                        
+                        // Auto-hide popup after 2 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            showCopyPopup = false
+                        }
+                    }
             }
         }
         
@@ -193,20 +185,30 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            VStack (alignment: .leading) {
-                Text("openrouter.ai apis:")
-                    .font(.title)
-                QuestionSection
-                    .padding(.bottom, 8)
-                
-                if availableModels[selectedModel]!.supportImage {
-                    ImageSection
+            ZStack {
+                VStack (alignment: .leading) {
+                    Text("openrouter.ai apis:")
+                        .font(.title)
+                    QuestionSection
                         .padding(.bottom, 8)
+                    
+                    if availableModels[selectedModel]!.supportImage {
+                        ImageSection
+                            .padding(.bottom, 8)
+                    }
+                    
+                    AnswerSection
+                    
+                    Spacer()
                 }
-                
-                AnswerSection
-                
-                Spacer()
+                if showCopyPopup {
+                    Text(copyText)
+                        .padding()
+                        .background(Color.black.opacity(0.6))
+                        .foregroundColor(.yellow)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .transition(.opacity)
+                }
             }
             .scrollDismissesKeyboard(.automatic)
             .padding()
@@ -257,11 +259,10 @@ struct ContentView: View {
         
         // Handle image inclusion if the model supports it
         if availableModels[selectedModel]?.supportImage == true {
-            if let uiImage = selectedImage?.asUIImage() {
-                if let imageData = uiImage.jpegData(compressionQuality: 0.8) {
-                    let base64String = imageData.base64EncodedString()
+            if let selectedImage {
+                if let imageCoded = convertImageToWebPBase64(image: selectedImage) {
                     let imageUrlDict: [String: Any] = [
-                        "url": "data:image/jpeg;base64,\(base64String)",
+                        "url": imageCoded,
                         "detail": "auto"
                     ]
                     contentArray.append([
@@ -358,25 +359,6 @@ struct ContentView: View {
 
     }
 }
-
-#if canImport(UIKit)
-extension Image {
-    func asUIImage() -> UIImage? {
-        let controller = UIHostingController(rootView: self)
-        controller.view.frame = CGRect(x: 0, y: 0, width: 1, height: 1) // Arbitrary size
-        
-        controller.view.layoutIfNeeded()
-        
-        let size = controller.view.intrinsicContentSize
-        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
-        controller.view.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let uiImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return uiImage
-    }
-}
-#endif
 
 extension UIApplication {
     func endEditing() {

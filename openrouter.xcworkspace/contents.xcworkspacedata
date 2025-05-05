@@ -2,91 +2,17 @@
 <Workspace
    version = "1.0">
    <Group
-      location = "group:openrouter_ios"
-      name = "openrouter_ios">
-      <FileRef
-         location = "group:ai_chart_ios.xcodeproj">
-      </FileRef>
-      <Group
-         location = "group:ai_chart_ios"
-         name = "ai_chart_ios">
-         <FileRef
-            location = "group:Assets.xcassets">
-         </FileRef>
-         <FileRef
-            location = "group:ai_chart_ios.swift">
-         </FileRef>
-         <FileRef
-            location = "group:chart_ext.swift">
-         </FileRef>
-         <FileRef
-            location = "group:ContentView.swift">
-         </FileRef>
-      </Group>
-   </Group>
-   <Group
       location = "group:openrouter_mac"
       name = "openrouter_mac">
       <FileRef
          location = "group:openrouter_mac.xcodeproj">
       </FileRef>
-      <Group
-         location = "group:openrouter_mac"
-         name = "openrouter_mac">
-         <FileRef
-            location = "group:openrouter_mac.entitlements">
-         </FileRef>
-         <FileRef
-            location = "group:Assets.xcassets">
-         </FileRef>
-         <FileRef
-            location = "group:openrouter_mac.swift">
-         </FileRef>
-         <Group
-            location = "group:Model"
-            name = "Model">
-            <FileRef
-               location = "group:ConversationVM.swift">
-            </FileRef>
-         </Group>
-         <Group
-            location = "group:Views"
-            name = "Views">
-            <FileRef
-               location = "group:InpurArea.swift">
-            </FileRef>
-            <FileRef
-               location = "group:ChartArea.swift">
-            </FileRef>
-            <FileRef
-               location = "group:MainChartHeader.swift">
-            </FileRef>
-            <FileRef
-               location = "group:SideBar.swift">
-            </FileRef>
-            <FileRef
-               location = "group:SideButtons.swift">
-            </FileRef>
-            <FileRef
-               location = "group:SearchField.swift">
-            </FileRef>
-            <FileRef
-               location = "group:ContentView.swift">
-            </FileRef>
-         </Group>
-         <Group
-            location = "group:Helpers"
-            name = "Helpers">
-            <FileRef
-               location = "group:ImagePicker.swift">
-            </FileRef>
-            <FileRef
-               location = "group:UIHelper.swift">
-            </FileRef>
-            <FileRef
-               location = "group:EtcHelper.swift">
-            </FileRef>
-         </Group>
-      </Group>
+   </Group>
+   <Group
+      location = "group:openrouter_ios"
+      name = "openrouter_ios">
+      <FileRef
+         location = "group:ai_chart_ios.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>
