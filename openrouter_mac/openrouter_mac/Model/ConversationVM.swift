@@ -321,6 +321,12 @@ class AIChartVeiwModel: ObservableObject {
         mokeCOnversations()
     }
     
+    func deleteConversation(at: UUID){
+        if selectedConversation?.id == at {
+            selectedConversation = nil
+        }
+        conversations.removeAll { $0.id == at }
+    }
     
     func clearCurrentConversation() {
         guard let conversation = selectedConversation else { return }

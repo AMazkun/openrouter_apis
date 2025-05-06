@@ -95,6 +95,7 @@ struct InputArea: View {
     var body: some View {
         // Input Area
         VStack(spacing: 8) {
+            let questionisEmpty = conversation.question.isEmpty
             HStack{
                 TextField("Ask anything...", text: $conversation.question, axis: .vertical)
                     .lineLimit(2...10)
@@ -120,8 +121,8 @@ struct InputArea: View {
                     }
                     .buttonStyle(.borderless)
                 }
-                .opacity(conversation.question.isEmpty ? 0 : 1)
-                .disabled(conversation.question.isEmpty)
+                .opacity(questionisEmpty ? 0 : 1)
+                .disabled(questionisEmpty)
             }
             
             VStack(alignment: .leading) {
@@ -135,27 +136,38 @@ struct InputArea: View {
                         Spacer()
                     }
                 } else if !imageUrl.isEmpty {
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 100)
-                    } placeholder: {
-                        ProgressView()
-                            .frame(width: 150, height: 100)
+                    HStack {
+                        AsyncImage(url: URL(string: imageUrl)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 150, height: 100)
+                        } placeholder: {
+                            ProgressView()
+                                .frame(width: 150, height: 100)
+                        }
+                        Spacer()
                     }
                 }
                 
                 if showUrl {
+                    let urlEmpty = conversation.imageUrl.isEmpty
                     HStack {
                         TextField("Image URL", text: $conversation.imageUrl)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .onSubmit {
+                                addImage = false
+                                conversation.appendQuestion()
+                                charts.update.toggle()
+                            }
                         Button(action : {setPasteboardString(conversation.imageUrl)} ) {
                             Image(systemName: "doc.on.doc")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 16, height: 16)
                         }
+                        .opacity(urlEmpty ? 0 : 1)
+                        .disabled(urlEmpty)
                         .buttonStyle(.borderless)
 
                     }

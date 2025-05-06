@@ -10,12 +10,7 @@ import SwiftUI
 struct SidebarView: View {
     @EnvironmentObject var charts: AIChartVeiwModel
     @State var searchText: String = ""
-    
-    // Function to handle deletion
-    func deleteConversation(at id : UUID) {
-        charts.conversations.removeAll(where: {$0.id == id})
-    }
-    
+        
     @ViewBuilder
     func ConversationRow(conversation: Conversation)-> some View {
         HStack(spacing: 12) {
@@ -61,7 +56,7 @@ struct SidebarView: View {
                                         charts.selectedConversation = conversation
                                     }
                                 Button {
-                                    deleteConversation(at: conversation.id)
+                                    charts.deleteConversation(at: conversation.id)
                                 } label : {
                                     Image(systemName: "trash")
                                 }
