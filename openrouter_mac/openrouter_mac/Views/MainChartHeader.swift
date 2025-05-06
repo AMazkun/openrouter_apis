@@ -21,7 +21,7 @@ struct MainChartHeader: View {
                     Image(systemName: "square.and.arrow.up")
                         .foregroundColor(.gray)
                 }
-                Button(action: {}) {
+                Button(action: {conversations.clearCurrentConversation()}) {
                     Image(systemName: "square.and.pencil")
                         .foregroundColor(.gray)
                 }

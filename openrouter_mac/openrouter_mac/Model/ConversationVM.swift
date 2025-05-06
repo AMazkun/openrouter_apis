@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-let openRouterApiKey = "<YOUR_API_KEY_HERE>"    // Replace with your actual OpenRouter API key
+let openRouterApiKey = "<YOU API KEY HERE>"
 
 struct ModelOption: Identifiable, Hashable {
     var id: String
@@ -81,7 +81,7 @@ class Conversation: ObservableObject, Identifiable {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(openRouterApiKey)", forHTTPHeaderField: "Authorization")
-        request.setValue("maa.dev.AI-View-Test", forHTTPHeaderField: "HTTP-Referer") // Required by OpenRouter
+        request.setValue("maa.dev.OpenRouter-Test", forHTTPHeaderField: "HTTP-Referer") // Required by OpenRouter
         
         var contentArray: [[String: Any]] = [["type": "text", "text": question]]
         
@@ -198,7 +198,7 @@ class Conversation: ObservableObject, Identifiable {
          
         DispatchQueue.main.async {
             self.question = ""
-            if self.imageUrl != nil { self.imageUrl = "" }
+            if self.imageUrl != "" { self.imageUrl = "" }
             if self.selectedImage != nil { self.selectedImage = nil }
             
             if self.messages.isEmpty {
@@ -307,11 +307,53 @@ class AIChartVeiwModel: ObservableObject {
     @Published var selectedConversation: Conversation?
     @Published var defaultModel: String = theDefaultModel
     @Published var update: Bool = false
+
+    // clipboard
+    var question: String = ""
+    var selectedImage: NSImage? = nil
+    var imageUrl: String = ""
+
+    var chartsClipboardEmpty : Bool {
+        return question.isEmpty && selectedImage == nil && imageUrl.isEmpty
+    }
     
     init() {
         mokeCOnversations()
     }
     
+    
+    func clearCurrentConversation() {
+        guard let conversation = selectedConversation else { return }
+        conversation.messages.removeAll()
+        conversation.topic = ""
+        update.toggle()
+    }
+    
+    func copyToChartClipboard(message: Message) {
+        self.question = message.content
+        if let selectedImage = message.selectedImage {
+            self.selectedImage = selectedImage
+            self.imageUrl = ""
+        } else if let url = message.imageUrl {
+            self.selectedImage = nil
+            self.imageUrl = url
+        } else {
+            self.selectedImage = nil
+            self.imageUrl = ""
+        }
+    }
+    
+    func pasteFromChartClipboard() {
+        guard let conversation = selectedConversation else { return }
+        conversation.question = question
+        if selectedImage != nil {
+            conversation.imageUrl = ""
+            conversation.selectedImage = selectedImage
+        } else {
+            conversation.imageUrl = imageUrl
+            conversation.selectedImage = nil
+        }
+    }
     
     func redraw() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

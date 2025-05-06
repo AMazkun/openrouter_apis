@@ -14,7 +14,7 @@ struct InputArea: View {
     @State private var addImage: Bool = false
     @State private var showUrl: Bool = false
     @State private var showPicker: Bool = false
-
+    
     @ViewBuilder
     var buttonPanel: some View {
         HStack(spacing: 12) {
@@ -28,7 +28,7 @@ struct InputArea: View {
                     Image(systemName: "xmark.circle.fill")
                 }
                 .buttonStyle(PlainButtonStyle())
-
+                
             } else {
                 Menu {
                     Button("URL", action: {
@@ -52,21 +52,21 @@ struct InputArea: View {
             }
             .buttonStyle(PlainButtonStyle())
             .disabled(true)
-
-            Button(action: {}) {
-                Image(systemName: "paperplane.fill")
+            
+            Button(action: {charts.pasteFromChartClipboard()}) {
+                Image(systemName: "clipboard")
                     .foregroundColor(.gray)
             }
             .buttonStyle(PlainButtonStyle())
-            .disabled(true)
-
+            .disabled(charts.chartsClipboardEmpty)
+            
             Button(action: {}) {
                 Image(systemName: "arrow.clockwise")
                     .foregroundColor(.gray)
             }
             .buttonStyle(PlainButtonStyle())
             .disabled(true)
-
+            
             Spacer()
             
             Button(action: {}) {
@@ -75,7 +75,7 @@ struct InputArea: View {
             }
             .buttonStyle(PlainButtonStyle())
             .disabled(true)
-
+            
             Button(action: {
                 addImage = false
                 conversation.appendQuestion()
@@ -95,15 +95,34 @@ struct InputArea: View {
     var body: some View {
         // Input Area
         VStack(spacing: 8) {
-            
-            TextField("Ask anything...", text: $conversation.question, axis: .vertical)
-                .lineLimit(2...10)
-                .textFieldStyle(PlainTextFieldStyle())
-                .onSubmit {
-                    addImage = false
-                    conversation.appendQuestion()
-                    charts.update.toggle()
+            HStack{
+                TextField("Ask anything...", text: $conversation.question, axis: .vertical)
+                    .lineLimit(2...10)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .onSubmit {
+                        addImage = false
+                        conversation.appendQuestion()
+                        charts.update.toggle()
+                    }
+                VStack{
+                    Button(action : {setPasteboardString(conversation.question)} ) {
+                        Image(systemName: "doc.on.doc")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                    .buttonStyle(.borderless)
+                    Button(action : {conversation.question = ""} ) {
+                        Image(systemName: "xmark.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                    .buttonStyle(.borderless)
                 }
+                .opacity(conversation.question.isEmpty ? 0 : 1)
+                .disabled(conversation.question.isEmpty)
+            }
             
             VStack(alignment: .leading) {
                 let imageUrl = conversation.imageUrl
@@ -128,8 +147,18 @@ struct InputArea: View {
                 }
                 
                 if showUrl {
-                    TextField("Image URL", text: $conversation.imageUrl)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    HStack {
+                        TextField("Image URL", text: $conversation.imageUrl)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Button(action : {setPasteboardString(conversation.imageUrl)} ) {
+                            Image(systemName: "doc.on.doc")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                        }
+                        .buttonStyle(.borderless)
+
+                    }
                 }
             }
             

@@ -7,84 +7,129 @@
 
 import SwiftUI
 struct HUMessageView: View {
+    @EnvironmentObject var charts: AIChartVeiwModel
     let message: Message
+    @State var showCopyPopup: Bool = false
     
     var body: some View {
-        HStack(alignment: .top) {
-            Spacer()
-            
-            // Message bubble
-            VStack (alignment: .trailing){
-                Text(message.content)
-                    .padding()
-                    .background(Color.blue.opacity(0.2))
-                    .cornerRadius(12)
-
-                if let image = message.selectedImage {
-                    Image(nsImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 150, height: 100)
-                } else if let imageUrl = message.imageUrl, !imageUrl.isEmpty {
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
+        ZStack {
+            HStack(alignment: .top) {
+                Spacer()
+                
+                // Message bubble
+                VStack (alignment: .trailing){
+                    Text(message.content)
+                        .padding()
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(12)
+                        .contentShape(Rectangle())
+                        .onTapGesture(count: 2) {
+                            showCopyPopup = true
+                            charts.copyToChartClipboard(message: message)
+                            
+                            // Auto-hide popup after 2 seconds
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                charts.update.toggle()
+                                showCopyPopup = false
+                            }
+                        }
+                    
+                    if let image = message.selectedImage {
+                        Image(nsImage: image)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 150, height: 100)
-                    } placeholder: {
-                        ProgressView()
-                            .frame(width: 150, height: 100)
+                    } else if let imageUrl = message.imageUrl, !imageUrl.isEmpty {
+                        AsyncImage(url: URL(string: imageUrl)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 150, height: 100)
+                        } placeholder: {
+                            ProgressView()
+                                .frame(width: 150, height: 100)
+                        }
                     }
+                    
+                    Text(formattedTime(message.timestamp))
+                        .font(.caption2)
+                        .foregroundColor(.gray)
+                        .padding(.trailing, 5)
                 }
-
-                Text(formattedTime(message.timestamp))
-                    .font(.caption2)
-                    .foregroundColor(.gray)
-                    .padding(.trailing, 5)
+                // Avatar
+                Image(systemName: "person.circle.fill")
+                    .foregroundColor(.blue)
+                    .font(.title)
+                    .padding(.leading, -8)
+                
             }
-            // Avatar
-            Image(systemName: "person.circle.fill")
-                .foregroundColor(.blue)
-                .font(.title)
-                .padding(.leading, -8)
             
+            if(showCopyPopup) {
+                Text("Question copied!")
+                    .padding()
+                    .background(Color.blue.opacity(0.2))
+                    .cornerRadius(12)
+            }
         }
     }
 }
 
 struct AIMessageView: View {
+    @ObservedObject var conversation : Conversation
     let content: String
     let timestamp : Date?
     
+    @State var showCopyPopup: Bool = false
+
+    
     var body: some View {
-        HStack(alignment: .top) {
-            // Avatar
-            Image(systemName: "brain.head.profile")
-                .foregroundColor(.purple)
-                .font(.title)
-                .padding(.trailing, -8)
-            
-            if content.isEmpty {
-                ProgressView()
-                    .padding(.leading)
-                    .padding(.bottom)
-            } else {
-                // Message bubble
-                VStack(alignment: .leading) {
-                    
-                    Text(content)
-                        .padding()
-                        .background(Color.indigo.opacity(0.2))
-                        .cornerRadius(12)
-                    if let timestamp {
-                        Text(formattedTime(timestamp))
-                            .font(.caption2)
-                            .foregroundColor(.gray)
-                            .padding(.leading, 5)
+        ZStack{
+            HStack(alignment: .top) {
+                // Avatar
+                Image(systemName: "brain.head.profile")
+                    .foregroundColor(.purple)
+                    .font(.title)
+                    .padding(.trailing, -8)
+                
+                if content.isEmpty {
+                    ProgressView()
+                        .padding(.leading)
+                        .padding(.bottom)
+                } else {
+                    // Message bubble
+                    VStack(alignment: .leading) {
+                        
+                        Text(content)
+                            .padding()
+                            .background(Color.indigo.opacity(0.2))
+                            .cornerRadius(12)
+                        if let timestamp {
+                            Text(formattedTime(timestamp))
+                                .font(.caption2)
+                                .foregroundColor(.gray)
+                                .padding(.leading, 5)
+                        }
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture(count: 2) {
+                        showCopyPopup = true
+                        setPasteboardString(content)
+                        
+                        // Auto-hide popup after 2 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            showCopyPopup = false
+                        }
+                    }
+
                 }
+                Spacer()
             }
-            Spacer()
+            if(showCopyPopup) {
+                Text("Answer copied to clipboard!")
+                    .padding()
+                    .background(Color.indigo.opacity(0.2))
+                    .cornerRadius(12)
+            }
         }
     }
 }
@@ -112,18 +157,18 @@ struct ChartArea: View {
                                 HUMessageView(message: message)
                                     .id(message.id)
                             } else {
-                                AIMessageView(content: message.content, timestamp:  message.timestamp)
+                                AIMessageView(conversation: conversation, content: message.content, timestamp:  message.timestamp)
                                     .id(message.id)
                             }
                         }
                         
                         // AI typing indicator (moved above the chat history for visibility)
                         if isTyping {
-                            AIMessageView(content: typingText, timestamp: nil)
+                            AIMessageView(conversation: conversation, content: typingText, timestamp: nil)
                                 .id(1)
                         }
                         if waitingAnswer {
-                            AIMessageView(content: "", timestamp: nil)
+                            AIMessageView(conversation: conversation, content: "", timestamp: nil)
                                 .id(1)
                         }
                     }

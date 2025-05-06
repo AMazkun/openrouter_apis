@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let openRouterApiKey = "<YOUR_API_KEY_HERE>"    // Replace with your actual OpenRouter API key
+let openRouterApiKey = "<YOU API KEY HERE>"
 
 struct ModelOption: Identifiable, Hashable {
     var id: String

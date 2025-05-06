@@ -46,3 +46,9 @@ func convertImageToWebPBase64(image: NSImage) -> String? {
     let base64String = webpData.base64EncodedString()
     return "data:image/webp;base64,\(base64String)"
 }
+
+
+func setPasteboardString(_ string: String) {
+    NSPasteboard.general.clearContents()
+    NSPasteboard.general.setString(string, forType: .string)
+}
